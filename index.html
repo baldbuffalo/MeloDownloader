@@ -71,7 +71,7 @@
             var youtubeLink = document.getElementById('youtubeLink').value;
 
             // Construct the download link (this is a placeholder, you may need a server-side component)
-            var downloadLink = 'https://your-server/download?youtubeLink=' + encodeURIComponent(youtubeLink);
+            var downloadLink = 'https://melodownloader.netlify.app/netlify/functions/download?youtubeLink=' + encodeURIComponent(youtubeLink);
 
             // Trigger the download
             window.location.href = downloadLink;
