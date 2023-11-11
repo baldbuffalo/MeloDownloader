@@ -4,7 +4,7 @@
         var youtubeLink = document.getElementById('youtubeLink').value;
 
         // Construct the download link (replace 'your-netlify-site' with your actual Netlify site name)
-        var downloadLink = 'https://your-netlify-site.netlify.app/.netlify/functions/download?youtubeLink=' + encodeURIComponent(youtubeLink);
+        var downloadLink = 'https://melodownloader.netlify.app//.netlify/functions/download?youtubeLink=' + encodeURIComponent(youtubeLink);
 
         // Use fetch to initiate the download
         fetch(downloadLink, { method: 'GET' })
