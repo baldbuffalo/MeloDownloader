@@ -1,5 +1,5 @@
 // Update the URL with your Netlify site and function name
-const authEndpoint = 'https://your-netlify-site.netlify.app/.netlify/functions/auth';
+const authEndpoint = 'https://melodownloader.netlify.app/.netlify/functions/auth';
 
 // Perform Google Sign-In and send user data to the serverless function
 // ...
