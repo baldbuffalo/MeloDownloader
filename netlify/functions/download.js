@@ -1,39 +1,60 @@
-// netlify/functions/download.js
+// functions/download.js
 
+const fetch = require('node-fetch');
 const ytdl = require('ytdl-core');
+const { Readable } = require('stream');
 
-exports.handler = async function(event, context) {
+exports.handler = async function (event, context) {
   try {
-    const { youtubeLink } = JSON.parse(event.body);
+    const { youtubeLink } = event.queryStringParameters;
 
-    // Validate YouTube link
-    if (!ytdl.validateURL(youtubeLink)) {
+    if (!youtubeLink) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: 'Invalid YouTube link' }),
+        body: JSON.stringify({ error: 'YouTube link is required.' }),
       };
     }
 
-    // Download the YouTube video
-    const videoInfo = await ytdl.getInfo(youtubeLink);
-    const videoStream = ytdl(youtubeLink, { format: 'mp4' });
+    // Validate YouTube link (you might want to add more validation)
+    if (!ytdl.validateURL(youtubeLink)) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Invalid YouTube link.' }),
+      };
+    }
 
-    // Set up response headers
-    const headers = {
-      'Content-Disposition': `attachment; filename="${videoInfo.title}.mp4"`,
-      'Content-Type': 'video/mp4',
-    };
+    // Get video information
+    const videoInfo = await ytdl.getInfo(youtubeLink);
+
+    // Get the highest quality video stream
+    const videoStream = ytdl(youtubeLink, { quality: 'highestvideo' });
+
+    // Convert video stream to a buffer
+    const videoBuffer = await streamToBuffer(videoStream);
 
     return {
       statusCode: 200,
-      headers,
-      body: videoStream,
-      isBase64Encoded: true,
+      body: JSON.stringify({ videoBuffer, videoInfo }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     };
   } catch (error) {
+    console.error('Error:', error);
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Internal server error' }),
+      body: JSON.stringify({ error: 'Internal Server Error' }),
     };
   }
 };
+
+// Utility function to convert a stream to a buffer
+async function streamToBuffer(stream) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on('data', (chunk) => chunks.push(chunk));
+    stream.on('end', () => resolve(Buffer.concat(chunks)));
+    stream.on('error', (error) => reject(error));
+  });
+}
