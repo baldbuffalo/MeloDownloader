@@ -1,17 +1,18 @@
 // Update the URL with your Netlify site and function name
-const authEndpoint = 'https://melodownloader.netlify.app/.netlify/functions/auth';
+const authEndpoint = '/.netlify/functions/download';
 
-// Perform Google Sign-In and send user data to the serverless function
-// ...
+// Perform YouTube video download
+async function downloadVideo() {
+  const youtubeLink = document.getElementById('youtubeLink').value;
 
-// Example using fetch
-fetch(authEndpoint, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ googleId, displayName, email }),
-})
-  .then(response => response.json())
-  .then(data => console.log(data))
-  .catch(error => console.error(error));
+  try {
+    const response = await fetch(`${authEndpoint}?youtubeLink=${encodeURIComponent(youtubeLink)}`);
+    const data = await response.json();
+
+    // Handle the response data (e.g., display video info)
+    console.log(data);
+  } catch (error) {
+    console.error('Download failed:', error);
+    alert('Download failed. Please check the YouTube link.');
+  }
+}
