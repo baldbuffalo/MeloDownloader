@@ -1,11 +1,2 @@
 [build]
-  functions = "functions/"
-
-
-[build]
-  command = "npm run build"  # Specify your build command
-  publish = "dist"           # Specify your publish directory
-
-[context.production.environment]
-  # Add environment variables if needed
-  VARIABLE_NAME = "value"
+  functions = "functions"
