@@ -1,29 +1,24 @@
+const { createServer } = require('http');
+const { parse } = require('url');
 const ytdl = require('ytdl-core');
 
-exports.handler = async function (event, context) {
-  const youtubeLink = event.queryStringParameters.youtubeLink;
+const server = createServer((req, res) => {
+  const { query } = parse(req.url, true);
+  const youtubeLink = query.youtubeLink;
 
-  try {
-    // Use ytdl-core to get the video stream
-    const videoInfo = await ytdl.getInfo(youtubeLink);
-    const videoStream = ytdl(youtubeLink, { quality: 'highestvideo' });
+  ytdl.getInfo(youtubeLink, (err, info) => {
+    if (err) {
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Error downloading the video');
+    } else {
+      res.setHeader('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
+      res.setHeader('Content-Type', 'video/mp4');
+      ytdl(youtubeLink, { format: 'mp4' }).pipe(res);
+    }
+  });
+});
 
-    // Set headers for video download
-    const headers = {
-      'Content-Disposition': `attachment; filename="${videoInfo.videoDetails.title}.mp4"`,
-      'Content-Type': 'video/mp4',
-    };
-
-    return {
-      statusCode: 200,
-      headers,
-      body: videoStream,
-      isBase64Encoded: true,
-    };
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Error downloading the video' }),
-    };
-  }
-};
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
