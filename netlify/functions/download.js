@@ -1,24 +1,26 @@
-const { createServer } = require('http');
-const { parse } = require('url');
-const ytdl = require('ytdl-core');
+<script>
+    document.getElementById('downloadButton').addEventListener('click', function() {
+        // Get the YouTube link from the input
+        var youtubeLink = document.getElementById('youtubeLink').value;
 
-const server = createServer((req, res) => {
-  const { query } = parse(req.url, true);
-  const youtubeLink = query.youtubeLink;
+        // Construct the download link (replace 'your-netlify-site' with your actual Netlify site name)
+        var downloadLink = 'https://your-netlify-site.netlify.app/.netlify/functions/download?youtubeLink=' + encodeURIComponent(youtubeLink);
 
-  ytdl.getInfo(youtubeLink, (err, info) => {
-    if (err) {
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Error downloading the video');
-    } else {
-      res.setHeader('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
-      res.setHeader('Content-Type', 'video/mp4');
-      ytdl(youtubeLink, { format: 'mp4' }).pipe(res);
-    }
-  });
-});
-
-const port = process.env.PORT || 3000;
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+        // Use fetch to initiate the download
+        fetch(downloadLink, { method: 'GET' })
+            .then(response => response.blob())
+            .then(blob => {
+                // Create a temporary link and trigger the download
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'video.mp4'; // You can set the desired filename here
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error initiating download:', error);
+            });
+    });
+</script>
