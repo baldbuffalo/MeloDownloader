@@ -1,9 +1,9 @@
 // netlify/functions/auth.js
 
-exports.handler = async function(event, context) {
+exports.handler = async function({ body }, context) {
   try {
     // Parse the incoming data from the client
-    const { googleId, displayName, email } = JSON.parse(event.body);
+    const { googleId, displayName, email } = JSON.parse(body);
 
     // Perform server-side logic (e.g., store data in a database)
 
