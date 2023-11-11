@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>YouTube Video Downloader</title>
     <style>
         /* Add some basic styling */
         body {
@@ -52,22 +52,30 @@
 <body>
 
     <header>
-        <h1>Welcome to My Website</h1>
+        <h1>YouTube Video Downloader</h1>
     </header>
 
     <main>
-        <label for="downloadLink">Enter Download Link:</label>
-        <input type="text" id="downloadLink" placeholder="Paste your download link here" />
-        <button id="downloadButton">Download</button>
+        <label for="youtubeLink">Enter YouTube Video Link:</label>
+        <input type="text" id="youtubeLink" placeholder="Paste YouTube video link here" />
+        <button id="downloadButton">Download Video</button>
     </main>
 
     <footer>
-        <p>&copy; 2023 My Website. All rights reserved.</p>
+        <p>&copy; 2023 YouTube Video Downloader. All rights reserved.</p>
     </footer>
 
-    <!-- You can add your scripts here -->
     <script>
-        // Add your JavaScript code here if needed
+        document.getElementById('downloadButton').addEventListener('click', function() {
+            // Get the YouTube link from the input
+            var youtubeLink = document.getElementById('youtubeLink').value;
+
+            // Construct the download link (this is a placeholder, you may need a server-side component)
+            var downloadLink = 'https://your-server/download?youtubeLink=' + encodeURIComponent(youtubeLink);
+
+            // Trigger the download
+            window.location.href = downloadLink;
+        });
     </script>
 
 </body>
