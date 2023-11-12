@@ -4,39 +4,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Downloader</title>
+    <title>YouTube Video Downloader</title>
 </head>
 
 <body>
 
-    <label for="fileLink">Enter File Link:</label>
-    <input type="text" id="fileLink" placeholder="Paste file link here" />
-    <button id="downloadButton">Download File</button>
+    <label for="youtubeLink">Enter YouTube Video Link:</label>
+    <input type="text" id="youtubeLink" placeholder="Paste YouTube video link here" />
+    <button id="downloadButton">Download Video</button>
 
     <script>
         document.getElementById('downloadButton').addEventListener('click', function() {
-            // Get the file link from the input
-            var fileLink = document.getElementById('fileLink').value;
+            // Get the YouTube link from the input
+            var youtubeLink = document.getElementById('youtubeLink').value;
 
-            // Trigger the download
-            downloadFile(fileLink);
+            // Construct the download link (replace 'your-server' with your server domain)
+            var downloadLink = 'https://melodownloader.netlify.app/download?youtubeLink=' + encodeURIComponent(youtubeLink);
+
+            // Use fetch to initiate the download
+            fetch(downloadLink, { method: 'GET' })
+                .then(response => response.blob())
+                .then(blob => {
+                    // Create a temporary link and trigger the download
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'video.mp4'; // You can set the desired filename here
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Error initiating download:', error);
+                });
         });
-
-        function downloadFile(fileLink) {
-            // Create a temporary link element
-            var link = document.createElement('a');
-            link.href = fileLink;
-            link.download = 'downloaded_file'; // You can specify a default filename
-
-            // Append the link to the body
-            document.body.appendChild(link);
-
-            // Trigger a click on the link to start the download
-            link.click();
-
-            // Remove the link from the body
-            document.body.removeChild(link);
-        }
     </script>
 
 </body>
